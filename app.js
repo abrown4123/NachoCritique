@@ -1,16 +1,10 @@
 var express    = require("express"),
     app        = express(),
     bodyParser = require("body-parser"),
-    mongoose   = require("mongoose")
+    mongoose   = require("mongoose"),
+    Nacho      = require("./models/nachos");
     
-//SCHEMA SETUP
-var nachoSchema = new mongoose.Schema({
-    restaurant: String,
-    image: String,
-    description: String
-});
-    
-var Nacho = mongoose.model("Nacho", nachoSchema);
+
 
 // Nacho.create(
 //     {
