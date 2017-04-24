@@ -1,0 +1,11 @@
+<% include ../partials/header %>
+<h1><%= nacho.restaurant %></h1>
+<img src = "<%= nacho.image %>"/>
+<p><%= nacho.description %></p>
+<% nacho.comments.forEach(function(comment){ %>
+    <p>
+        <strong><%= comment.author %></strong> - <%= comment.text %>
+    </p>
+    
+ <% }); %>
+<% include ../partials/footer %>

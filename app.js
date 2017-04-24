@@ -2,25 +2,11 @@ var express    = require("express"),
     app        = express(),
     bodyParser = require("body-parser"),
     mongoose   = require("mongoose"),
-    Nacho      = require("./models/nachos");
+    Nacho      = require("./models/nachos"),
+    seedDB     = require("./seeds");
     
 
-
-// Nacho.create(
-//     {
-//         restaurant: "Recipe",
-//         image: "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQfj6ggvxCG-RmmkM4dZ_K-LYCARN0mkAvomueUl24F5keaVn2a",
-//         description: "These nachos were the best!"
-//     }, function(err, nacho){
-//         if(err){
-//             console.log("There was an error");
-//         } else{
-//             console.log("New Campground: ");
-//             console.log(nacho);
-//         }
-//     });
-
-        
+seedDB();       
 mongoose.connect("mongodb://localhost/nacho_critique");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
@@ -36,7 +22,7 @@ app.get("/nachos", function(req, res){
             if(err){
                 console.log("There was an error");
             } else{
-                res.render("index", {nachos: nachos});
+                res.render("nachos/index", {nachos: nachos});
             } 
         });
 });
@@ -51,28 +37,40 @@ app.post("/nachos", function(req, res){
         if(err){
             console.log("There was an error");
         } else{
-            res.redirect("/index");
+            res.redirect("/nachos");
         }
     });
 });
 
 //NEW - Add new nacho reviews
 app.get("/nachos/new", function(req, res){
-    res.render("new");
+    res.render("nachos/new");
 });
 
 //SHOW - shows more about one campground
-app.get("nachos/:id", function(req, res){
-    
-    Nacho.findById( req.params.id, function(err, foundNacho){
+app.get("/nachos/:id", function(req, res){
+    Nacho.findById(req.params.id).populate("comments").exec(function(err, foundNacho){
        if(err){
            console.log(err);
        }else{
-           res.render("show", {campground: foundNacho});
+           console.log(foundNacho);
+           res.render("nachos/show", {nacho: foundNacho});
        }
     });
-    
-    
+});
+
+//====================================
+//Comments routes
+//====================================
+
+app.get("/nachos/:id/comments/new", function(req, res){
+    Nacho.findById(req.params.id, function(err, nacho){
+        if (err){
+            console.log(err);
+        } else{
+            res.render("comments/new", {nachos: nacho});
+        }
+    });
 });
 
 app.listen(process.env.PORT, process.env.IP, function(){

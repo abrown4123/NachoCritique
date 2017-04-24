@@ -1,0 +1,19 @@
+<% include ../partials/header %>
+<div class = "container">    
+    <div class = "row">
+        <h1>Add a new Comment for the Nachos at <%= nachos.restaurant %> </h1>
+        <form action = "/nachos/<%= nachos._id %>/comments" method = "POST">
+            <div class = "form-group">
+                <input class = "form-control" type = "text" name = "comment[text]" placeholder = "comment">
+            </div>    
+            <div class = "form-group">
+                <input class = "form-control" type = "text" name = "comment[author]" placeholder = "author">
+            </div>
+            <div class = "form-group">
+                <button class = "btn btn-lg btn-default btn-block btn-primary">Submit Review</button>
+            </div>
+        </form>
+        <a href = "/nachos">Go Back</a>
+    </div>
+</div>
+<% include ../partials/footer %>
