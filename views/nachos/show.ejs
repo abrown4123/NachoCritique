@@ -1,11 +1,48 @@
 <% include ../partials/header %>
-<h1><%= nacho.restaurant %></h1>
-<img src = "<%= nacho.image %>"/>
-<p><%= nacho.description %></p>
-<% nacho.comments.forEach(function(comment){ %>
+<div class = "container">
+    <div class = "row">
+        <div class = "col-md-3">
+            <p class = "lead">NachoCritique</p>
+            <div class = "list-group">
+                <li class = "list-group-item">List 1</li>
+                <li class = "list-group-item">List 2</li>
+                <li class = "list-group-item">List 3</li>
+            </div>
+        </div>
+        <div class = "col-md-9">
+            <div class = "thumbnail">
+                <img class = "img-responsive" src = "<%= nacho.image %>"/>
+                <div class = "caption-full">
+                    <h4 class = "pull-right">$12.00</h4>
+                    <h4><%= nacho.restaurant %></h4>
+                    <p><%= nacho.description %></p>
+                </div>
+            </div>
+            <div class = "well">
+                <div class = "text-right">
+                    <a class = "btn btn-success" href = "/nachos/<%= nacho._id %>/comments/new">Add new comment</a>            
+                </div>
+                <% nacho.comments.forEach(function(comment){ %>
+                    <div class = "row">
+                        <div class = "col-md-12">
+                            <strong><%= comment.author %></strong>
+                            <span class = "pull-right">10 days ago</span>
+                            <p>
+                                <%= comment.text %>
+                            </p>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
     <p>
-        <strong><%= comment.author %></strong> - <%= comment.text %>
+        
     </p>
-    
- <% }); %>
 <% include ../partials/footer %>

@@ -3,13 +3,14 @@ var express    = require("express"),
     bodyParser = require("body-parser"),
     mongoose   = require("mongoose"),
     Nacho      = require("./models/nachos"),
+    Comment    = require("./models/comments"),
     seedDB     = require("./seeds");
     
 
 seedDB();       
 mongoose.connect("mongodb://localhost/nacho_critique");
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static("public"));
+app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 
 app.get("/", function(req, res){
@@ -53,7 +54,6 @@ app.get("/nachos/:id", function(req, res){
        if(err){
            console.log(err);
        }else{
-           console.log(foundNacho);
            res.render("nachos/show", {nacho: foundNacho});
        }
     });
@@ -70,6 +70,24 @@ app.get("/nachos/:id/comments/new", function(req, res){
         } else{
             res.render("comments/new", {nachos: nacho});
         }
+    });
+});
+
+app.post("/nachos/:id/comments", function(req, res){
+    Nacho.findById(req.params.id, function(err, nacho){
+       if (err){
+           res.redirect("/nachos");
+       } else{
+           Comment.create(req.body.comment, function(err, comment){
+               if(err){
+                   console.log(err);
+               } else{
+                   nacho.comments.push(comment);
+                   nacho.save();
+                   res.redirect("/nachos/" + nacho._id);
+               }
+           });
+       }
     });
 });
 
