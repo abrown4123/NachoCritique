@@ -2,6 +2,9 @@ var express    = require("express"),
     app        = express(),
     bodyParser = require("body-parser"),
     mongoose   = require("mongoose"),
+    passport   = require("passport"),
+    localStrategy = require("passport-local"),
+    User       = require("./models/user"),
     Nacho      = require("./models/nachos"),
     Comment    = require("./models/comments"),
     seedDB     = require("./seeds");
@@ -13,6 +16,21 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 
+//PASSPORT CONFIGURATION
+
+app.use(require("express-session")({
+    secret: "This is a secret!",
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+//Landing Page
 app.get("/", function(req, res){
     res.render("landing");
 });
@@ -90,6 +108,29 @@ app.post("/nachos/:id/comments", function(req, res){
        }
     });
 });
+
+//====================================
+//AUTH Routes
+//====================================
+
+//show register form
+app.get("/register", function(req, res){
+    res.render("register");
+});
+
+//handle sign up logic
+app.post("/register", function(req,res){
+    User.register(new User({username: req.body.username}), req.body.password, function(err, user){
+        if(err){
+            console.log(err);
+            return res.render("register");
+        }
+        passport.authenticate("local")(req, res, function(){
+           res.redirect("/nachos"); 
+        });
+    });
+})
+
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("The Server is Running");
