@@ -1,0 +1,14 @@
+<% include partials/header %>
+
+<h1>Welcome Back!</h1>
+
+<form action = "/login" method = "POST">
+    <input type = "text" name = "username" placeholder = "username">
+    <input type = "password" name = "password" placeholder = "password">
+    <button>Login</button>
+</form>
+
+<a href = "/register">Sign Up</a>
+<a href = "/logout">Logout</a>
+
+<% include partials/footer %>

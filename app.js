@@ -129,8 +129,26 @@ app.post("/register", function(req,res){
            res.redirect("/nachos"); 
         });
     });
-})
+});
 
+//show login form
+app.get("/login", function(req, res){
+    res.render("login");
+});
+
+//handle login logic
+app.post("/login", passport.authenticate("local",{
+    successRedirect: "/nachos/show",
+    failureRedirect: "/login"
+}),
+    function(req, res){
+});
+
+//Logout Route
+app.get("/logout", function(req, res){
+   req.logout();
+   res.redirect("/");
+});
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("The Server is Running");
