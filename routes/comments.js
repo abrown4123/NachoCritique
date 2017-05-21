@@ -1,5 +1,5 @@
 var express = require("express");
-var router = express.Router();
+var router = express.Router({mergeParams: true});
 var Nacho = require("../models/nachos");
 var Comment = require("../models/comments");
 
@@ -26,6 +26,12 @@ router.post("/", isLoggedIn, function(req, res){
                if(err){
                    console.log(err);
                } else{
+                   //add id and username to comment
+                   comment.author.id = req.user._id;
+                   comment.author.username = req.user.username;
+                   //save comment
+                   comment.save();
+                   //save comment to nacho comments
                    nacho.comments.push(comment);
                    nacho.save();
                    res.redirect("/nachos/" + nacho._id);

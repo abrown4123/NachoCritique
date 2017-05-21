@@ -13,7 +13,7 @@ var commentRoutes = require("./routes/comments"),
     nachosRoutes  = require("./routes/nachos"),
     indexRoutes   = require("./routes/index");
 
-seedDB();       
+//seedDB(); seeds nachos     
 mongoose.connect("mongodb://localhost/nacho_critique");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));

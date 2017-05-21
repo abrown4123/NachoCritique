@@ -16,11 +16,15 @@ router.get("/", function(req, res){
 });
 
 //Create - add new Nachos
-router.post("/", function(req, res){
+router.post("/", isLoggedIn, function(req, res){
     var place = req.body.restaurant;
     var image = req.body.image;
     var description = req.body.description;
-    var newNachos = {restaurant: place, image: image, description: description};
+    var author = {
+        id: req.user._id,
+        username: req.user.username
+    };
+    var newNachos = {restaurant: place, image: image, description: description, author: author};
     Nacho.create(newNachos, function(err, newNacho){
         if(err){
             console.log("There was an error");
@@ -31,7 +35,7 @@ router.post("/", function(req, res){
 });
 
 //NEW - Add new nacho reviews
-router.get("/new", function(req, res){
+router.get("/new", isLoggedIn, function(req, res){
     res.render("nachos/new");
 });
 
@@ -45,5 +49,13 @@ router.get("/:id", function(req, res){
        }
     });
 });
+
+//Middleware
+function isLoggedIn(req, res, next){
+    if(req.isAuthenticated()){
+        return next();
+    }
+    res.redirect("/login");
+}
 
 module.exports = router;
