@@ -50,6 +50,39 @@ router.get("/:id", function(req, res){
     });
 });
 
+//Edit Nachos
+router.get("/:id/edit", function(req, res){
+    Nacho.findById(req.params.id, function(err, foundNacho){
+        if(err){
+            res.redirect("/nachos");
+        } else{
+            res.render("nachos/edit", {nacho: foundNacho});
+        }
+    });
+});
+
+//Update Nachos
+router.put("/:id", function(req, res){
+    Nacho.findByIdAndUpdate(req.params.id, req.body.nacho, function(err, updatedNacho){
+      if(err){
+          res.redirect("/nachos");
+      } else{
+          res.redirect("/nachos/" + req.params.id);
+      }
+   }); 
+});
+
+//Delete Nacho review
+router.delete("/:id", function(req, res){
+   Nacho.findByIdAndRemove(req.params.id, function(err){
+       if(err){
+           res.redirect("/nachos");
+       }else{
+           res.redirect("/nachos");
+       }
+    });
+});
+
 //Middleware
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){

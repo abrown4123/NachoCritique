@@ -17,6 +17,12 @@
                     <h4><%= nacho.restaurant %></h4>
                     <p><%= nacho.description %></p>
                     <p><em>Submitted By <%= nacho.author.username %></em></p>
+                    <a class = "btn btn-warning" href = "/nachos/<%= nacho._id %>/edit">Edit</a>
+                    <div>
+                    <form id = "delete" action = "/nachos/<%= nacho._id %>?_method=DELETE" method = "POST">
+                        <button class = "btn btn-danger">Delete</button>
+                    </form>
+                    </div>
                 </div>
             </div>
             <div class = "well">

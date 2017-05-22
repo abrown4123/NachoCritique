@@ -4,6 +4,7 @@ var express    = require("express"),
     mongoose   = require("mongoose"),
     passport   = require("passport"),
     localStrategy = require("passport-local"),
+    methodOverride = require("method-override"),
     User       = require("./models/user"),
     Nacho      = require("./models/nachos"),
     Comment    = require("./models/comments"),
@@ -18,6 +19,7 @@ mongoose.connect("mongodb://localhost/nacho_critique");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
+app.use(methodOverride("_method"));
 
 //PASSPORT CONFIGURATION
 
