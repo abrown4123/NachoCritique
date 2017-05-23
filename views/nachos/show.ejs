@@ -19,12 +19,10 @@
                     <p><em>Submitted By <%= nacho.author.username %></em></p>
                     <% if(currentUser && nacho.author.id.equals(currentUser._id)){ %>
                         <a class = "btn btn-warning" href = "/nachos/<%= nacho._id %>/edit">Edit</a>
-                        <div>
                         <form id = "delete" action = "/nachos/<%= nacho._id %>?_method=DELETE" method = "POST">
                             <button class = "btn btn-danger">Delete</button>
                         </form>
                     <% } %>    
-                    </div>
                 </div>
             </div>
             <div class = "well">
@@ -39,6 +37,7 @@
                             <p>
                                 <%= comment.text %>
                             </p>
+                            <a class = "btn btn-xs btn-warning" href = "/nachos/<%= nacho._id %>/comments/<%= comment._id %>/edit">Edit</a>
                         </div>
                     </div>
                 <% }); %>
@@ -46,12 +45,4 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-    <p>
-        
-    </p>
 <% include ../partials/footer %>
