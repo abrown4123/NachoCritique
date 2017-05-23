@@ -51,7 +51,7 @@ router.get("/:id", function(req, res){
 });
 
 //Edit Nachos
-router.get("/:id/edit", function(req, res){
+router.get("/:id/edit", authCheck, function(req, res){
     Nacho.findById(req.params.id, function(err, foundNacho){
         if(err){
             res.redirect("/nachos");
@@ -62,7 +62,7 @@ router.get("/:id/edit", function(req, res){
 });
 
 //Update Nachos
-router.put("/:id", function(req, res){
+router.put("/:id", authCheck, function(req, res){
     Nacho.findByIdAndUpdate(req.params.id, req.body.nacho, function(err, updatedNacho){
       if(err){
           res.redirect("/nachos");
@@ -73,7 +73,7 @@ router.put("/:id", function(req, res){
 });
 
 //Delete Nacho review
-router.delete("/:id", function(req, res){
+router.delete("/:id", authCheck, function(req, res){
    Nacho.findByIdAndRemove(req.params.id, function(err){
        if(err){
            res.redirect("/nachos");
@@ -89,6 +89,24 @@ function isLoggedIn(req, res, next){
         return next();
     }
     res.redirect("/login");
+}
+
+function authCheck(req, res, next){
+    if(req.isAuthenticated()){
+        Nacho.findById(req.params.id, function(err, foundNacho){
+            if(err){
+                res.redirect("back");
+            } else{
+                if(foundNacho.author.id.equals(req.user._id)){
+                    next();
+                } else{
+                    res.redirect("back");
+                }
+            }
+        });
+    } else{
+        res.redirect("back");
+    }
 }
 
 module.exports = router;
