@@ -2,12 +2,13 @@ var express = require("express");
 var router = express.Router({mergeParams: true});
 var Nacho = require("../models/nachos");
 var Comment = require("../models/comments");
+var middleware = require("../middleware");
 
 //====================================
 //Comments routes
 //====================================
 
-router.get("/new", isLoggedIn, function(req, res){
+router.get("/new", middleware.isLoggedIn, function(req, res){
     Nacho.findById(req.params.id, function(err, nacho){
         if (err){
             console.log(err);
@@ -17,7 +18,7 @@ router.get("/new", isLoggedIn, function(req, res){
     });
 });
 
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
     Nacho.findById(req.params.id, function(err, nacho){
        if (err){
            res.redirect("/nachos");
@@ -42,7 +43,7 @@ router.post("/", isLoggedIn, function(req, res){
 });
 
 //Edit comment route
-router.get("/:comment_id/edit", commentAuthCheck, function(req, res){
+router.get("/:comment_id/edit", middleware.commentAuthCheck, function(req, res){
     Comment.findById(req.params.comment_id, function(err, foundComment){
         if(err){
             res.redirect("back");
@@ -53,7 +54,7 @@ router.get("/:comment_id/edit", commentAuthCheck, function(req, res){
 });
 
 //Comment Update
-router.put("/:comment_id", commentAuthCheck ,function(req, res){
+router.put("/:comment_id", middleware.commentAuthCheck ,function(req, res){
     Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, newComment){
         if(err){
             res.redirect("back");
@@ -64,7 +65,7 @@ router.put("/:comment_id", commentAuthCheck ,function(req, res){
 });
 
 //Delete Comment
-router.delete("/:comment_id", commentAuthCheck, function(req, res){
+router.delete("/:comment_id", middleware.commentAuthCheck, function(req, res){
     Comment.findByIdAndRemove(req.params.comment_id, function(err){
        if(err){
            res.redirect("back");
@@ -74,29 +75,7 @@ router.delete("/:comment_id", commentAuthCheck, function(req, res){
     });
 });
 
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
 
-function commentAuthCheck(req, res, next){
-    if(req.isAuthenticated()){
-        Comment.findById(req.params.comment_id, function(err, foundComment){
-            if(err){
-                res.redirect("back");
-            } else{
-                if(foundComment.author.id.equals(req.user._id)){
-                    next();
-                } else{
-                    res.redirect("back");
-                }
-            }
-        });
-    } else{
-        res.redirect("back");
-    }
-}
+
 
 module.exports = router;

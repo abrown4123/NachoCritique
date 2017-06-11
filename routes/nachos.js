@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var Nacho = require("../models/nachos");
 var Comment = require("../models/comments");
+var middleware = require("../middleware");
 
 
 //Index - Shows all nachos
@@ -16,7 +17,7 @@ router.get("/", function(req, res){
 });
 
 //Create - add new Nachos
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
     var place = req.body.restaurant;
     var image = req.body.image;
     var description = req.body.description;
@@ -35,7 +36,7 @@ router.post("/", isLoggedIn, function(req, res){
 });
 
 //NEW - Add new nacho reviews
-router.get("/new", isLoggedIn, function(req, res){
+router.get("/new", middleware.isLoggedIn, function(req, res){
     res.render("nachos/new");
 });
 
@@ -51,7 +52,7 @@ router.get("/:id", function(req, res){
 });
 
 //Edit Nachos
-router.get("/:id/edit", authCheck, function(req, res){
+router.get("/:id/edit", middleware.authCheck, function(req, res){
     Nacho.findById(req.params.id, function(err, foundNacho){
         if(err){
             res.redirect("/nachos");
@@ -62,7 +63,7 @@ router.get("/:id/edit", authCheck, function(req, res){
 });
 
 //Update Nachos
-router.put("/:id", authCheck, function(req, res){
+router.put("/:id", middleware.authCheck, function(req, res){
     Nacho.findByIdAndUpdate(req.params.id, req.body.nacho, function(err, updatedNacho){
       if(err){
           res.redirect("/nachos");
@@ -73,7 +74,7 @@ router.put("/:id", authCheck, function(req, res){
 });
 
 //Delete Nacho review
-router.delete("/:id", authCheck, function(req, res){
+router.delete("/:id", middleware.authCheck, function(req, res){
    Nacho.findByIdAndRemove(req.params.id, function(err){
        if(err){
            res.redirect("/nachos");
@@ -82,31 +83,5 @@ router.delete("/:id", authCheck, function(req, res){
        }
     });
 });
-
-//Middleware
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
-
-function authCheck(req, res, next){
-    if(req.isAuthenticated()){
-        Nacho.findById(req.params.id, function(err, foundNacho){
-            if(err){
-                res.redirect("back");
-            } else{
-                if(foundNacho.author.id.equals(req.user._id)){
-                    next();
-                } else{
-                    res.redirect("back");
-                }
-            }
-        });
-    } else{
-        res.redirect("back");
-    }
-}
 
 module.exports = router;
