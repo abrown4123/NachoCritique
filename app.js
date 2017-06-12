@@ -8,7 +8,8 @@ var express    = require("express"),
     User       = require("./models/user"),
     Nacho      = require("./models/nachos"),
     Comment    = require("./models/comments"),
-    seedDB     = require("./seeds");
+    seedDB     = require("./seeds"),
+    flash      = require("connect-flash");
 
 var commentRoutes = require("./routes/comments"),
     nachosRoutes  = require("./routes/nachos"),
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 app.use(methodOverride("_method"));
+app.use(flash());
 
 //PASSPORT CONFIGURATION
 
