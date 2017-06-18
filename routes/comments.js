@@ -21,7 +21,8 @@ router.get("/new", middleware.isLoggedIn, function(req, res){
 router.post("/", middleware.isLoggedIn, function(req, res){
     Nacho.findById(req.params.id, function(err, nacho){
        if (err){
-           res.redirect("/nachos");
+            req.flash("error", "Something went wrong");
+            res.redirect("/nachos");
        } else{
            Comment.create(req.body.comment, function(err, comment){
                if(err){
@@ -35,6 +36,7 @@ router.post("/", middleware.isLoggedIn, function(req, res){
                    //save comment to nacho comments
                    nacho.comments.push(comment);
                    nacho.save();
+                   req.flash("success", "Successfully added comment");
                    res.redirect("/nachos/" + nacho._id);
                }
            });
@@ -70,6 +72,7 @@ router.delete("/:comment_id", middleware.commentAuthCheck, function(req, res){
        if(err){
            res.redirect("back");
        } else{
+           req.flash("success", "Comment was successfully deleted");
            res.redirect("/nachos/" + req.params.id );
        }
     });
