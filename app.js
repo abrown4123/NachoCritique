@@ -16,8 +16,9 @@ var commentRoutes = require("./routes/comments"),
     indexRoutes   = require("./routes/index");
 
 //seedDB(); seeds nachos     
-// mongoose.connect("mongodb://localhost/nacho_critique");
-mongoose.connect("mongodb://me:me@ds051720.mlab.com:51720/nachocritique");
+
+mongoose.connect(process.env.DATABASEURL);
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
